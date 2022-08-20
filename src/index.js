@@ -13,13 +13,11 @@ refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMore.addEventListener('click', onLoadMore);
 
 let searchQuery = '';
-// let currentPage = 1;
+let currentPage = 1;
 
 async function onSearch(event) {
   event.preventDefault();
-
   searchQuery = event.currentTarget.elements.searchQuery.value;
-
   currentPage = 1;
 
   if (searchQuery === '') {

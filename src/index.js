@@ -1,7 +1,8 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import API from './fetchImages';
-
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = {
     searchForm: document.querySelector('.search-form'),
@@ -14,6 +15,11 @@ refs.loadMore.addEventListener('click', onLoadMore);
 
 let searchQuery = '';
 let currentPage = 1;
+
+let lightbox = new SimpleLightbox('.photo-card a', {
+  captions: true,
+  captionDelay: 350,
+});
 
 async function onSearch(event) {
   event.preventDefault();
@@ -42,6 +48,8 @@ async function onSearch(event) {
 
       renderImagesCard(images.hits);
 
+      lightbox.refresh();
+
       const { height: cardHeight } = refs.imageContainer.firstElementChild.getBoundingClientRect();
 
       window.scrollBy({
@@ -60,6 +68,8 @@ async function onLoadMore() {
   const images = await API.fetchImages(searchQuery, currentPage);
 
   renderImagesCard(images.hits);
+
+  lightbox.refresh();
 }
 
 
@@ -67,27 +77,31 @@ async function onLoadMore() {
 function renderImagesCard(images) {
   const markup = images
     .map(el => {
-        return `<div class="photo-card">
-  <img src="${el.webformatURL}" alt="${el.tags}" loading="lazy" />
-  <div class="info">
-    <p class="info-item">
-      <b>Likes</b>${el.likes}
-    </p>
-    <p class="info-item">
-      <b>Views</b>${el.views}
-    </p>
-    <p class="info-item">
-      <b>Comments</b>${el.comments}
-    </p>
-    <p class="info-item">
-      <b>Downloads</b>${el.downloads}
-    </p>
-  </div>
-</div>`
+      return `
+  <div class="photo-card">
+    <a href="${el.largeImageURL}">
+      <img src="${el.webformatURL}" alt="${el.tags}" loading="lazy" />
+    </a>
+    <div class="info">
+      <p class="info-item">
+        <b>Likes</b>${el.likes}
+      </p>
+      <p class="info-item">
+        <b>Views</b>${el.views}
+      </p>
+      <p class="info-item">
+        <b>Comments</b>${el.comments}
+      </p>
+      <p class="info-item">
+        <b>Downloads</b>${el.downloads}
+      </p>
+   </div>
+ </div>`
     }).join('');
   
   refs.imageContainer.insertAdjacentHTML('beforeend', markup);
 };
+
 
 function clearImagesContainer() {
   refs.imageContainer.innerHTML = '';

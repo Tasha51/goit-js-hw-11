@@ -79,3 +79,11 @@ img {
   margin: 0;
   padding: 2;
 }
+
+.end-text{
+  text-align: center;
+  text-transform: uppercase;
+  font-size: large;
+  font-weight: 500;
+  color: darkmagenta;
+}
